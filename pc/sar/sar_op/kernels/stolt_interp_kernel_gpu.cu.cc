@@ -3,7 +3,7 @@
 #define EIGEN_USE_GPU
 
 #include "stolt_interp_op.h"
-#include "tensorflow/core/util/cuda_kernel_helper.h"
+#include "tensorflow/core/util/gpu_kernel_helper.h"
 
 #define Add(c,a,b) c.x = a.x + b.x; c.y = a.y + b.y
 #define Multiply_Complex_Real(c,a,b) c.x = a.x * b; c.y = a.y * b
