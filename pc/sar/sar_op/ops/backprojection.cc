@@ -9,6 +9,9 @@ namespace tensorflow {
 
 using ::tensorflow::shape_inference::InferenceContext;
 using ::tensorflow::shape_inference::ShapeHandle;
+using CPUDevice = Eigen::ThreadPoolDevice;
+using GPUDevice = Eigen::GpuDevice;
+
 
 REGISTER_OP("Backprojection")
   .Input("pos: float32")
