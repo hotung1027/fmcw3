@@ -3,7 +3,7 @@
 #define EIGEN_USE_GPU
 
 #include "backprojection_op.h"
-#include "tensorflow/core/util/cuda_kernel_helper.h"
+#include "tensorflow/core/util/gpu_kernel_helper.h"
 
 #define Conjugate(a, b) a.x = b.x; a.y = -b.y;
 #define MulReal(a,b) a.x*b.x - a.y*b.y
