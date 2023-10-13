@@ -97,26 +97,6 @@ print('Sweep points', sweep_samples)
 #Hilbert transformation to get complex data
 data = hilbert_rvp(data, fs, bw/tsweep)
 
-if 0:
-    shdata = 20*np.log10(np.abs(np.real([np.fft.rfft(r) for r in data])))
-    plt.figure()
-    plt.title('Raw data, range FFT')
-    imgplot = plt.imshow(shdata, aspect='auto', interpolation='none', extent=raw_extent)
-    plt.xlabel('Range [m]')
-    plt.ylabel('Cross-range [m]')
-    m = np.max(shdata)
-    #Limit the dynamic range to clean the rounding errors
-    imgplot.set_clim(m-dynamic_range,m)
-
-if 0:
-    plt.figure()
-    plt.title('Raw data')
-    kr0 = (4*np.pi/c)*(fc - bw/2)
-    kr1 = (4*np.pi/c)*(fc + bw/2)
-    plt.imshow(data.real, aspect='auto', interpolation='none', extent=(kr0, kr1, crange0, crange1))
-    plt.xlabel('Range wavenumber [1/m]')
-    plt.ylabel('Cross-range [m]')
-
 plt.show()
 
 #Zeropad cross-range
@@ -129,14 +109,6 @@ kr = np.linspace(((4*np.pi/c)*(fc - bw/2)), ((4*np.pi/c)*(fc + bw/2)), sweep_sam
 
 #along the track fft
 cfft = np.fft.fftshift(np.fft.fft(data, axis=0), 0)
-
-if 0:
-    plt.figure()
-    plt.title('Along track FFT phase')
-    plt.imshow(np.angle(cfft), aspect='auto', extent=[kr[0], kr[-1], kx[0], kx[-1]])
-    plt.figure()
-    plt.title('Along track FFT magnitude')
-    plt.imshow(np.abs(cfft), aspect='auto', extent=[kr[0], kr[-1], kx[0], kx[-1]])
 
 #matched filter
 if rs != 0:
@@ -161,14 +133,6 @@ for i in range(len(kx)):
     #ci = interp.interp1d(ky, cfft[i], fill_value=0, bounds_error=False)
     ci = lanczos_interp1d(ky, cfft[i])
     st[i,:] = ci(ky_even)
-
-if 0:
-    plt.figure()
-    plt.title('Stolt interpolation phase')
-    plt.imshow(np.angle(st), aspect='auto', extent=[ky_even[0], ky_even[-1], kx[0], kx[-1]])
-    plt.figure()
-    plt.title('Stolt interpolation magnitude')
-    plt.imshow(np.abs(st), aspect='auto', extent=[ky_even[0], ky_even[-1], kx[0], kx[-1]])
 
 #Window again
 #wx = window(st.shape[0])

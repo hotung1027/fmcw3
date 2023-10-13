@@ -16,15 +16,15 @@ def load_op(name, has_grad=False):
       functions
   """
   global __all__
-  path = os.path.join(os.path.dirname(__file__), 'build/%s_op.so' % name)
+  path = os.path.join(os.path.dirname(__file__), f'build/{name}_op.so')
   _module = tf.load_op_library(path)
   if has_grad:
-    __all__.append('%s' % name)
-    __all__.append('%s_grad' % name)
-    return getattr(_module, '%s' % name), getattr(_module, '%s_grad' % name)
+    __all__.append(f'{name}')
+    __all__.append(f'{name}_grad')
+    return getattr(_module, f'{name}'), getattr(_module, f'{name}_grad')
   else:
-    __all__.append('%s' % name)
-    return getattr(_module, '%s' % name)
+    __all__.append(f'{name}')
+    return getattr(_module, f'{name}')
 
 
 stolt_interp, stolt_interp_grad = load_op('stolt_interp', has_grad=True)

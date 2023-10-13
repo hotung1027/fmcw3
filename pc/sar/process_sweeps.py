@@ -100,18 +100,18 @@ with open(sys.argv[1], 'rb') as f:
     wl = c/(f0+bw/2)
     samples_in_sweep = int(tsweep*fs)
 
-    if sweeps_to_read != None:
-        samples = (2+2*samples_in_sweep*channels)*sweeps_to_read
-    else:
+    if sweeps_to_read is None:
         samples = None
 
+    else:
+        samples = (2+2*samples_in_sweep*channels)*sweeps_to_read
     find_start(f)
     print('start', f.tell())
     i = 0
     j = 0
     sweep_count = 0
     previous_n = None
-    while samples == None or i < samples:
+    while samples is None or i < samples:
         n = f.read(2)
         j += 2
         i += 2
@@ -124,15 +124,15 @@ with open(sys.argv[1], 'rb') as f:
             s, n = f.read(2)
             restart = False
             if s != start[0]:
-                print('Lost track of start at {}'.format(f.tell()))
+                print(f'Lost track of start at {f.tell()}')
                 restart = True
-            if restart == False and previous_n != None:
+            if not restart and previous_n != None:
                 if n != (previous_n+1)&0xff:
-                    print('Lost a sweep. Previous {}, now {} at {}'.format(previous_n, n, f.tell()))
+                    print(f'Lost a sweep. Previous {previous_n}, now {n} at {f.tell()}')
                     restart = True
             if restart:
                 find_start(f)
-                print('Jumped to {}'.format(f.tell()))
+                print(f'Jumped to {f.tell()}')
                 previous_n = None
                 l = []
                 j = 0
@@ -145,12 +145,11 @@ with open(sys.argv[1], 'rb') as f:
                     ch2.append(l[1::2])
                 else:
                     ch1.append(l)
-                l = []
                 sweep_count = 1
             else:
-                l = []
                 sweep_count += 1
 
+            l = []
 settings['fs'] = fs
 print('Done reading')
 
@@ -170,7 +169,7 @@ d = f_to_d(f, bw, tsweep)
 nstart = np.searchsorted(tslow, tstart)
 nend = np.searchsorted(tslow, tend)
 
-print('nstart {}, nend {}, length {}'.format(nstart, nend, max(len(ch1), len(ch2))))
+print(f'nstart {nstart}, nend {nend}, length {max(len(ch1), len(ch2))}')
 
 if len(ch1) > 0:
     ch1 = ch1[nstart:nend]

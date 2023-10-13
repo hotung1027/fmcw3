@@ -36,7 +36,7 @@ class ADF4158():
         for key in self.register_def.itervalues():
             for r in key:
                 if r in keys:
-                    raise Exception("Duplicate register {}".format(r))
+                    raise Exception(f"Duplicate register {r}")
                 keys.append(r)
 
     def freq_to_regs(self, fstart, fpd_freq, bw, length, delay):
@@ -127,22 +127,26 @@ class ADF4158():
 
     def find_reg(self, reg):
         """Finds register by name"""
-        for key, val in self.register_def.iteritems():
-            if reg in val.keys():
-                return key, val[reg]
-        return None, None
+        return next(
+            (
+                (key, val[reg])
+                for key, val in self.register_def.iteritems()
+                if reg in val.keys()
+            ),
+            (None, None),
+        )
 
     def write_value(self, **kw):
         """Write value to register, doesn't update the device"""
         for reg, val in kw.iteritems():
             #print "{} = {}".format(reg, val)
             reg_n, reg_def = self.find_reg(reg)
-            if reg_n == None:
-                raise ValueError("Register {} not found".format(reg))
+            if reg_n is None:
+                raise ValueError(f"Register {reg} not found")
             reg_start = reg_def[0]
             reg_len = reg_def[1]
             if val > 2**reg_len-1 or val < 0:
-                raise ValueError("Invalid value, got: {}, maximum {}".format(val, 2**reg_len-1))
+                raise ValueError(f"Invalid value, got: {val}, maximum {2**reg_len - 1}")
             #Clear previous value
             self.registers[reg_n] &= (~((((2**reg_len-1))&0xFFFFFFFF) << reg_start) & 0xFFFFFFFF)
             self.registers[reg_n] |= (val) << reg_start
