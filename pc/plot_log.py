@@ -12,8 +12,7 @@ def butter_highpass(cutoff, fs, order=4):
 
 def butter_highpass_filter(data, cutoff, fs, order=4):
     b, a = butter_highpass(cutoff, fs, order=order)
-    y = filtfilt(b, a, data)
-    return y
+    return filtfilt(b, a, data)
 
 def twos_comp(val, bits):
     """compute the 2's complement of int value val"""
